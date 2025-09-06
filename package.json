@@ -1,0 +1,27 @@
+{
+  "name": "real-soccer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start:client": "npm start --prefix client",
+    "start:server": "npm start --prefix server",
+    "dev": "concurrently \"npm run start:client\" \"npm run start:server\""
+  },
+  "keywords": [],
+  "author": "Satyam Jadhav",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express-validator": "^7.2.1"
+  }
+}
