@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/products";
+const API_URL = "/api/products";
 
 // Fetch all products
 export const fetchProducts = createAsyncThunk("products/fetchAll", async () => {
@@ -15,6 +15,36 @@ export const fetchProduct = createAsyncThunk("products/fetchOne", async (id) => 
   return res.data;
 });
 
+// Create product
+export const createProduct = createAsyncThunk("products/create", async (productData, { getState }) => {
+  const state = getState();
+  const token = state.auth.user.token;
+  const res = await axios.post(API_URL, productData, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+});
+
+// Update product
+export const updateProduct = createAsyncThunk("products/update", async ({ id, productData }, { getState }) => {
+  const state = getState();
+  const token = state.auth.user.token;
+  const res = await axios.put(`${API_URL}/${id}`, productData, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+});
+
+// Delete product
+export const deleteProduct = createAsyncThunk("products/delete", async (id, { getState }) => {
+  const state = getState();
+  const token = state.auth.user.token;
+  await axios.delete(`${API_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return id;
+});
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -23,7 +53,11 @@ const productSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearSelected: (state) => {
+      state.selected = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => { state.loading = true; })
@@ -37,8 +71,19 @@ const productSlice = createSlice({
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
         state.selected = action.payload;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.items.push(action.payload);
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const index = state.items.findIndex(p => p._id === action.payload._id);
+        if (index !== -1) state.items[index] = action.payload;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.items = state.items.filter(p => p._id !== action.payload);
       });
   },
 });
 
+export const { clearSelected } = productSlice.actions;
 export default productSlice.reducer;

@@ -1,22 +1,29 @@
 // server/routes/userRoutes.js
-import express from 'express';
-import { protect } from '../middleware/authMiddleware.js';
-import User from '../models/User.js';
-import { getProfile, updateProfile, listUsers } from '../controllers/authController.js';
+import express from "express";
+import { protect, admin } from "../middleware/authMiddleware.js";
+import {
+  getProfile,
+  updateProfile,
+  listUsers,
+  getUserById,
+  updateUserByAdmin,
+  deleteUser,
+} from "../controllers/authController.js";
 
 const router = express.Router();
 
-// Get logged-in user profile
-router.get('/profile', protect, getProfile);
+// Logged-in user profile
+router.route("/profile")
+  .get(protect, getProfile)
+  .put(protect, updateProfile);
 
-// Update logged-in user profile
-router.put('/profile', protect, updateProfile);
+// Admin: list all users
+router.get("/", protect, admin, listUsers);
 
-// Admin-only list (simple check in handler)
-router.get('/', protect, async (req, res) => {
-  const me = await User.findById(req.user.userId);
-  if (me?.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
-  return listUsers(req, res);
-});
+// Admin: manage individual users
+router.route("/:id")
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUserByAdmin)
+  .delete(protect, admin, deleteUser);
 
 export default router;

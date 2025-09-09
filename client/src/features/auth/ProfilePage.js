@@ -15,7 +15,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/users/profile", {
+        const res = await axios.get("/api/users/profile", {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setProfile(res.data);

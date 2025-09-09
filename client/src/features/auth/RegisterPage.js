@@ -34,6 +34,8 @@ export default function RegisterPage() {
           className="border p-2 w-full mb-2"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoComplete="name"
+          required
         />
         <input
           type="email"
@@ -41,6 +43,8 @@ export default function RegisterPage() {
           className="border p-2 w-full mb-2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          required
         />
         <input
           type="password"
@@ -48,6 +52,9 @@ export default function RegisterPage() {
           className="border p-2 w-full mb-4"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="new-password"
+          required
+          minLength={6}
         />
         <button
           type="submit"

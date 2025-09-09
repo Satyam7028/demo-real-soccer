@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/auth/";
+const API_URL = "/api/auth/";
 
 // Register
 export const registerUser = createAsyncThunk(
@@ -39,7 +39,7 @@ export const updateProfile = createAsyncThunk(
       const token = state.auth.user.token;
 
       const res = await axios.put(
-        "http://localhost:5001/api/users/profile",
+        "/api/users/profile",
         profileData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
+const schema = new mongoose.Schema({
+  name: {type:String, required:true},
+  slug: {type:String, index:true},
+  image: String,
+  description: String,
+  category: String,
+  price: {type:Number, required:true},
+  countInStock: {type:Number, default:0},
+}, { timestamps:true });
 
-const productSchema = mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    image: { type: String, required: true },
-    description: { type: String, required: true },
-    category: { type: String, required: true },
-    price: { type: Number, required: true },
-    countInStock: { type: Number, required: true, default: 0 },
-  },
-  { timestamps: true }
-);
+schema.index({ name: "text", description: "text", category: "text" });
 
-const Product = mongoose.model("Product", productSchema);
-export default Product;
+export default mongoose.model("Product", schema);
